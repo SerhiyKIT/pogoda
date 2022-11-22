@@ -1,48 +1,89 @@
-import React, { useState, useMemo } from "react";
-import { Input, Space } from 'antd';
-import { IDataSearch } from "../constant/interface";
-import { Country, State, City } from 'country-state-city';
-import { ICountry, IState, ICity } from 'country-state-city'
-
+import React, { useState, useEffect } from "react";
+import { Input, Select, Space, Table } from 'antd';
+import 'antd/dist/antd.css';
+import '../css/SearchCity.css'
+import { Days } from "../constant/enum";
+import { addState } from "../redux/features/dataSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AnyAction } from "@reduxjs/toolkit";
+import { tableColumns } from "./tableColums";
 
 const { Search } = Input;
 
 export const SearchCity = () => {
-  const [onChangeSearch, setOnChangeSearch] = useState<string>('');
-  const [daySearch, setDaySearch] = useState<number>(5);
-  const [hourSearch, setHourSearch] = useState<number>(24);
-  const url = 'http://api.weatherapi.com/v1';
-  const [data, setData] = useState<IDataSearch>({
+  const [city, setCity] = useState<string>('');
+  const [fetchConect, setFetchConect] = useState<boolean>(false);
+  const [daySearch, setDaySearch] = useState<Days>(Days.ONE);
+  const data = useSelector((store: AnyAction) => store.data);
+  const columns = tableColumns;
+  const dispatch = useDispatch();
+  const dataSearch = {
     key: '6b69c74caace45d5a7293203221811',
-    q: onChangeSearch,
+    q: city,
     days: daySearch,
-    hour: hourSearch,
-  });
+  };
+
+  const url =
+    `http://api.weatherapi.com/v1/forecast.json?key=${dataSearch.key}&q=${dataSearch.q}&days=${dataSearch.days}&aqi=no&alerts=no`;
 
   const SearchFetch = (async () => {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json'
         }
       });
       const json = await response.json();
       console.log('Works:', JSON.stringify(json));
+      setFetchConect(true);
+      dispatch(addState(JSON.stringify(json.forecast.forecastday)))
     }
-    catch (error) {
+    catch (error: any) {
       console.error('Error:', error);
     }
   });
 
+  const lication = () => {
+    fetch('https://extreme-ip-lookup.com/json/?key=kvQstGNcP6zrXftrbQd1')
+      .then(res => res.json())
+      .then(response => {
+        setCity(response.city);
+      })
+  };
+  console.log(data);
+  useEffect(() => {
+    lication();
+  }, [])
+
   return (
-    <Space direction="vertical">
-      <Search placeholder="City"
-        onChange={(e) => setOnChangeSearch(e.target.value)}
-        onSearch={SearchFetch}
-        enterButton />
-    </Space>
+    <div className="wrapper__search">
+      <div className="search__box">
+        <div className="search__space">
+          <Space direction="vertical">
+            <Search placeholder="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              onSearch={SearchFetch}
+              enterButton />
+          </Space>
+        </div>
+        <div className="search__day">
+          <span>Days prognos: </span>
+          <Select
+            value={daySearch}
+            style={{ width: 60 }}
+            onChange={(value) => setDaySearch(value)}
+            options={Object.values(Days).map(type =>
+            ({
+              label: type,
+              value: type
+            }))}
+          />
+        </div>
+      </div>
+      <Table dataSource={data.current} columns={columns} />;
+    </div>
   )
 };
 

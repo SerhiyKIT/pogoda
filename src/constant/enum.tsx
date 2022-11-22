@@ -1,22 +1,17 @@
-export enum ModalDirection {
-	ADD,
-	EDIT,
-	DEFAULT
-};
-
-export enum Option {
-	ADD_STATE = 'ADD_STATE',
-	EDIT_STATE = 'EDIT_STATE',
-	DEFAULT_STATE = 'DEFAULT_STATE'
-};
-
-export enum ModalType {
-	OPEN_MODAL,
-	CLOSED_MODAL
-}
-
-export enum Cars {
-	ADD,
-	EDIT,
-	DELETE
+export enum Days {
+	ONE = '1',
+	TWO = '2',
+	THREE = '3',
+	FOUR = '4',
+	FIVE = '5',
+	SIX = '6',
+	SEVEN = '7',
+	EIGHT = '8',
+	NINE = '9',
+	TEN = '10',
+	ELEVEN = '11',
+	TWELVE = '12',
+	THIRTEEN = '13',
+	FOURTEEN = '14',
+	FIFTEEN = '15'
 }

@@ -1,0 +1,12 @@
+.wrapper__search {
+	max-width: 1000px;
+	margin: 10px auto;
+	padding: 0px 5px;
+}
+.search__box {
+	display: inline-flex;
+	margin-bottom: 20px;
+}
+.search__space{
+	margin-right: 20px;
+}

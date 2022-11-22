@@ -1,42 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import 'antd/dist/antd.css';
-import { Tabs, Button } from 'antd';
+import { Table, Tabs } from 'antd';
+import { useSelector } from "react-redux";
+import { AnyAction } from "@reduxjs/toolkit";
+import { tableColumns } from "./tableColums";
 
 
 export const Page = () => {
-  const [city, setCity] = useState<string>('');
-
-  const onChange = (key: React.Key) => {
-    console.log(key);
-  };
-
-  const lication = () => {
-    fetch('https://extreme-ip-lookup.com/json/')
-      .then(res => res.json())
-      .then(response => {
-        console.log(response);
-        setCity(response.city);
-      })
-  };
-
+  const data = useSelector((store: AnyAction) => store.data);
+  const columns = tableColumns;
+  console.log('DataPage', data)
   useEffect(() => {
-    lication();
-  }, [])
+    
+  }, [data])
 
   return (
     <div>
-      <Tabs
-        onChange={onChange}
-        type="card"
-        items={new Array(3).fill(null).map((_, i) => {
-          const id = String(i + 1);
-          return {
-            label: `Tabi instans ${id}`,
-            key: id,
-            children: `Content of Tab Pane ${id}`,
-          };
-        })}
-      />
+      <Table dataSource={data.current} columns={columns} />;
     </div>
   );
 };
